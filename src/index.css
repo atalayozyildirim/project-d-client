@@ -1,0 +1,112 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@media print {
+    .no-print {
+        display: none;
+    }
+
+    .print-only {
+        display: block;
+    }
+}
+
+@media screen {
+    .print-only {
+        display: none;
+    }
+}
+
+.invoice-container {
+    width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+
+.invoice-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.invoice-left h1 {
+    margin: 0;
+    font-size: 32px;
+}
+
+.invoice-right {
+    text-align: right;
+}
+
+.invoice-right p {
+    margin: 0;
+}
+
+.qr-code-placeholder {
+    width: 100px;
+    height: 100px;
+    background-color: #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.invoice-addresses {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.from-address,
+.to-address {
+    width: 45%;
+}
+
+.from-address h2,
+.to-address h2 {
+    margin-bottom: 5px;
+}
+
+.invoice-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 10px;
+}
+
+.invoice-table th,
+.invoice-table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+}
+
+.add-item-button {
+    padding: 8px 12px;
+    margin-bottom: 20px;
+}
+
+.invoice-totals {
+    width: 300px;
+    margin-left: auto;
+    margin-top: 20px;
+}
+
+.totals-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+}
+
+.total-amount {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.generate-pdf-button {
+    padding: 10px 15px;
+    margin-top: 20px;
+}
