@@ -25,7 +25,8 @@ const LoginForm = () => {
     mutationFn: ({ email, password }) => LoginRequest(email, password),
     mutationKey: ["login"],
     onError: (error) => {
-      console.error("Login failed", error);
+      alert("Login failed");
+      console.error("Login error", error);
     },
     onSuccess: (data) => {
       console.log("Login successful", data);

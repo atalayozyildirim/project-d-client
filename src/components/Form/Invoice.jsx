@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../../util/api";
 
-export default function Invoice({ InvoiceID, closeInvoice }) {
+export default function Invoice({ closeInvoice }) {
   const [name, setName] = useState("");
   const [currentDate, setCurrentDate] = useState("");
   const [customerAddress, setCustomerAddress] = useState("Customer Address");
@@ -13,6 +14,10 @@ export default function Invoice({ InvoiceID, closeInvoice }) {
   const [kdv, setKdv] = useState(20);
   const [subTotal, setSubTotal] = useState(0);
   const [totalAmount, setTotalAmount] = useState(0);
+
+  const autoInvoiceNumber = `INV-${Math.floor(Math.random() * 1000)
+    .toString()
+    .padStart(3, "0")}`;
 
   useEffect(() => {
     const today = new Date();
@@ -61,24 +66,52 @@ export default function Invoice({ InvoiceID, closeInvoice }) {
     });
   };
 
-  const handleClick = async () => {
+  const postInvoice = async () => {
     try {
-      const response = await api().post("api/invoice/add", {
+      const formattedItems = items.map((item) => ({
+        productID: Math.floor(Math.random() * 1000),
+        description: item.description,
+        quantity: item.quantity,
+        price: item.unitPrice,
+      }));
+
+      const payload = {
+        invoiceNumber: autoInvoiceNumber,
+        invoiceDate: new Date().toISOString().split("T")[0],
         customerName: name,
-        customerEmail: "test@test.com",
         customerAddress: customerAddress,
-        invoiceDate: new Date(),
-        dueDate: new Date(new Date().setDate(new Date().getDate() + 1)),
-        products: items,
-        totalAmount: totalAmount,
-        status: "Pending",
-      });
-      console.log(response);
-      if (response.status === 201) closeInvoice();
+        items: formattedItems,
+        total: totalAmount.toFixed(2),
+        status: "pending",
+      };
+      const res = (await api()).post("/invoice/add", payload);
+
+      if (res.status === 201) {
+        closeInvoice();
+        return res.data;
+      }
     } catch (error) {
       console.log(error);
     }
   };
+
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: postInvoice,
+    mutationKey: ["invoice"],
+    onError: (error) => {
+      console.error("Error posting invoice:", error);
+    },
+    onSuccess: (data) => {
+      console.log("Invoice posted successfully:", data);
+      queryClient.invalidateQueries(["invoice"]);
+      closeInvoice();
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries(["invoice"]);
+    },
+  });
   return (
     <>
       <div
@@ -91,7 +124,9 @@ export default function Invoice({ InvoiceID, closeInvoice }) {
             <p>Date: {currentDate}</p>
           </div>
           <div className="invoice-right">
-            <p>Invoice No: {InvoiceID}</p>
+            <p className="text-black font-bold">
+              Invoice No: {autoInvoiceNumber}
+            </p>
             <div className="qr-code-placeholder">QR CODE</div>
           </div>
         </div>
@@ -102,21 +137,14 @@ export default function Invoice({ InvoiceID, closeInvoice }) {
               <input
                 type="text"
                 placeholder="Name"
-                className="bg-white"
-                onChange={(e) => setName(e.target.value)}
+                className="bg-white text-black"
               />
             </p>
             <p>
               <textarea
                 placeholder="Address"
-                className="resize-none w-80 bg-white"
+                className="resize-none w-80 bg-white text-black"
                 style={{ height: "auto", overflow: "hidden" }}
-                onChange={(e) => {
-                  const input = e.target;
-                  input.style.height = "auto";
-                  input.style.height = `${input.scrollHeight}px`;
-                  setCustomerAddress(input.value);
-                }}
               />
             </p>
           </div>
@@ -124,12 +152,17 @@ export default function Invoice({ InvoiceID, closeInvoice }) {
             <h2>Bill To</h2>
             <p>
               {" "}
-              <input type="text" placeholder="Name" className="bg-white" />
+              <input
+                type="text"
+                placeholder="Name"
+                className="bg-white text-black"
+                onChange={(e) => setName(e.target.value)}
+              />
             </p>
             <p>
               <textarea
                 placeholder="Address"
-                className="resize-none w-80 bg-white"
+                className="resize-none w-80 bg-white text-black"
                 style={{ height: "auto", overflow: "hidden" }}
                 onChange={(e) => {
                   const input = e.target;
@@ -200,9 +233,8 @@ export default function Invoice({ InvoiceID, closeInvoice }) {
         <button className="add-item-button" onClick={addItem}>
           Add Item
         </button>
-        <button className="add-item-button" onClick={handleClick}>
-          {" "}
-          Submit{" "}
+        <button className="add-item-button" onClick={() => mutation.mutate()}>
+          {"Submit Invoice"}
         </button>
         <div className="invoice-totals">
           <div className="totals-row">

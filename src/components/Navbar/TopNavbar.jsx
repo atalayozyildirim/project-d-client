@@ -35,7 +35,8 @@ const NavbarTopButton = () => {
           {location == "/customers" ||
           location == "/employers" ||
           location == "/invoice" ||
-          location == "/mail" ? (
+          location == "/mail" ||
+          location == "/tasks" ? (
             <>
               <EditNavbar />
               <AddNavbarButtons
@@ -67,6 +68,7 @@ const NavbarTopButton = () => {
             </svg>
           )}
         </div>
+
         <Link to={"/profile"}>
           <div
             id="profil"

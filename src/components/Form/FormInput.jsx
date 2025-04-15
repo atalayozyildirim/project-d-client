@@ -1,6 +1,8 @@
 import React from "react";
 import api from "../../util/api";
 import { useFormContext } from "../../Context/FormContext";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 export default function FormInput({
   close,
@@ -16,6 +18,7 @@ export default function FormInput({
   const [selectBoxData, setSelectBoxData] = React.useState([]);
   const { onSubmitData } = useFormContext();
   const pathname = window.location.pathname;
+
   const [data, setData] = React.useState({
     input_one: "",
     input_two: "",
@@ -58,13 +61,12 @@ export default function FormInput({
         break;
       case "Tasks":
         submitData = {
-          taskId: "1",
-          titile: data.input_one,
-          priority: data.input_two,
+          title: data.input_one,
+          description: data.input_two,
           assignedTo: data.input_three,
-          description: data.input_four,
+          priority: data.input_four,
           status: "Progress",
-          dueDate: new Date(data.input_five),
+          dueDate: data.input_five,
           field: "Tasks",
         };
         break;
@@ -98,16 +100,29 @@ export default function FormInput({
     setClicked(!clicked);
   };
   const SelectBoxFetchData = async () => {
-    const res = await api().get("/task/user/list");
+    const res = await (await api()).get("/task/user/list");
     setSelectBoxData(res.data);
   };
   const handleSelectChange = (e) => {
     const selectedOption = e.target.options[e.target.selectedIndex];
     const selectedId = selectedOption.dataset.id;
 
-    setData({ ...data, input_two: selectedId || "" });
+    setData({ ...data, input_three: selectedId || "" });
   };
 
+  const handlePriortiyChange = (e) => {
+    const selectedOption = e.target.options[e.target.selectedIndex];
+    const selectedId = selectedOption.value;
+    setData({ ...data, input_four: selectedId || "" });
+  };
+  const handleDateChange = (date) => {
+    const formattedDate = `${date.getFullYear()}-${String(
+      date.getMonth() + 1
+    ).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+
+    console.log(date);
+    setData({ ...data, input_five: formattedDate });
+  };
   React.useEffect(() => {
     if (fields === "Tasks") {
       SelectBoxFetchData();
@@ -156,39 +171,15 @@ export default function FormInput({
           >
             {textTwo}
           </label>
-          {
-            // @atalayozyildirim
-            pathname === "/tasks" ? (
-              selectBoxData && (
-                <select
-                  id="input2"
-                  name="input2"
-                  onChange={handleSelectChange}
-                  className="mt-1 block w-full px-3 py-2 p-4 border text-white bg-[#141517] border-[#494d55] rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                >
-                  <option value="" disabled selected>
-                    Nasılsın aşkta
-                  </option>
-                  {selectBoxData.map((item, index) => (
-                    <option key={index} value={item.name} data-id={item.userId}>
-                      {item.name}
-                    </option>
-                  ))}
-                </select>
-              )
-            ) : (
-              <input
-                type="text"
-                id="input2"
-                name="input2"
-                onChange={(e) =>
-                  setData({ ...data, input_two: e.target.value })
-                }
-                placeholder={textTwo}
-                className="mt-1 block w-full px-3 py-2 border text-white bg-[#141517] border-[#494d55] rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              />
-            )
-          }
+
+          <input
+            type="text"
+            id="input2"
+            name="input2"
+            onChange={(e) => setData({ ...data, input_two: e.target.value })}
+            placeholder={textTwo}
+            className="mt-1 block w-full px-3 py-2 border text-white bg-[#141517] border-[#494d55] rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+          />
         </div>
         <div className="w-full max-w-xs mx-auto mt-4">
           <label
@@ -198,16 +189,23 @@ export default function FormInput({
             {textThree}
           </label>
           {pathname === "/tasks" ? (
-            <input
-              type="date"
-              id="input3"
-              name="input3"
-              onChange={(e) =>
-                setData({ ...data, input_three: e.target.value })
-              }
-              placeholder={textThree}
-              className="mt-1 block w-full px-3 py-2 border text-white bg-[#141517] border-[#494d55] rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-            />
+            selectBoxData && (
+              <select
+                id="input3"
+                name="input3"
+                onChange={handleSelectChange}
+                className="mt-1 block w-full px-3 py-2 p-4 border text-white bg-[#141517] border-[#494d55] rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              >
+                <option value="" disabled selected>
+                  Atanacak Kişiyi Seç
+                </option>
+                {selectBoxData.map((item, index) => (
+                  <option key={index} value={item.name} data-id={item._id}>
+                    {item.name}
+                  </option>
+                ))}
+              </select>
+            )
           ) : (
             <input
               type="text"
@@ -229,14 +227,34 @@ export default function FormInput({
             >
               {textFour}
             </label>
-            <input
-              type="text"
-              id="input4"
-              name="input4"
-              onChange={(e) => setData({ ...data, input_four: e.target.value })}
-              placeholder={textFour}
-              className="mt-1 block w-full px-3 py-2 border text-white bg-[#141517] border-[#494d55] rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-            />
+            {pathname === "/tasks" ? (
+              selectBoxData && (
+                <select
+                  id="input4"
+                  name="input4"
+                  onChange={handlePriortiyChange}
+                  className="mt-1 block w-full px-3 py-2 p-5  border text-white bg-[#141517] border-[#494d55] rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                >
+                  <option value="" disabled selected>
+                    priority
+                  </option>
+                  <option value="low">Low</option>
+                  <option value="medium">Medium</option>
+                  <option value="high">High</option>
+                </select>
+              )
+            ) : (
+              <input
+                type="text"
+                id="input4"
+                name="input4"
+                onChange={(e) =>
+                  setData({ ...data, input_four: e.target.value })
+                }
+                placeholder={textFour}
+                className="mt-1 block w-full px-3 py-2 border text-white bg-[#141517] border-[#494d55] rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              />
+            )}
           </div>
         )}
         {textFive && (
@@ -247,14 +265,28 @@ export default function FormInput({
             >
               {textFive}
             </label>
-            <input
-              type="text"
-              id="input5"
-              name="input5"
-              onChange={(e) => setData({ ...data, input_five: e.target.value })}
-              placeholder={textFive}
-              className="mt-1 block w-full px-3 py-2 border text-white bg-[#141517] border-[#494d55] rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-            />
+
+            {pathname === "/tasks" ? (
+              <DatePicker
+                selected={data.input_five}
+                onChange={(e) => handleDateChange(e)}
+                dateFormat="yyyy-MM-dd" // Tarih formatı
+                placeholderText="Tarih seçin"
+                onFocus={(e) => e.target.blur()}
+                className="mt-1  min-w-[43vh] block  px-3 py-2 border text-white bg-[#141517] border-[#494d55] rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              />
+            ) : (
+              <input
+                type="text"
+                id="input5"
+                name="input5"
+                onChange={(e) =>
+                  setData({ ...data, input_five: e.target.value })
+                }
+                placeholder={textFive}
+                className="mt-1 block w-full px-3 py-2 border text-white bg-[#141517] border-[#494d55] rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              />
+            )}
           </div>
         )}
 
