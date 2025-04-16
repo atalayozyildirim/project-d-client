@@ -5,13 +5,38 @@ import EmailCard from "../components/Card/EmailCard.jsx";
 import { useADDNavbar } from "../Context/AddNavbarContext.jsx";
 import FormInput from "../components/Form/FormInput.jsx";
 import { useImap } from "../Context/ImapContext.jsx";
+import api from "../util/api.js";
+import { useQuery } from "@tanstack/react-query";
+import Loading from "../components/Layout/Loading.jsx";
+import { useMail } from "../Context/MailSend.jsx";
+import MailInput from "../components/Form/SendMail.jsx";
 
 const Inbox = () => {
   const { showAdd, showAddI } = useADDNavbar();
   const { showAddIm, showAddImap } = useImap();
+  const { showAddMail, toggleAddMail } = useMail();
+
+  const fetchToEmail = async () => {
+    const response = (await api()).get("/mail/inbox");
+
+    const data = await response.data;
+
+    return data;
+  };
+
+  const { data, error, isLoading } = useQuery({
+    queryFn: fetchToEmail,
+    queryKey: ["emails"],
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  });
+  if (isLoading) return <Loading />;
+
+  console.log(error);
   return (
     <>
       <Layout>
+        {showAddMail && <MailInput close={toggleAddMail} />}
         {showAdd && (
           <FormInput
             close={showAddI}
@@ -20,6 +45,7 @@ const Inbox = () => {
             textTwo="Port"
             textThree="Auth user"
             textFour="Password"
+            textFive={"From"}
           />
         )}
 
@@ -46,7 +72,7 @@ const Inbox = () => {
                 />
               </div>
               <div className="mt-5">
-                <EmailCard data={[]} />
+                <EmailCard data={data} />
               </div>
             </div>
             <div className="w-full min-h-screen border border-[#27272a] rounded-tl-none  -mt-2 rounded-bl-none rounded-xl p-5">

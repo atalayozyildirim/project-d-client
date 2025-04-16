@@ -76,8 +76,9 @@ export default function FormInput({
           port: parseInt(data.input_two, 10),
           user: data.input_three,
           password: data.input_four,
+          from: data.input_five,
           tls: true,
-          filed: "Emails",
+          field: "Emails",
         };
         break;
       case "Imap":
@@ -87,7 +88,14 @@ export default function FormInput({
           user: data.input_three,
           password: data.input_four,
           tls: true,
-          filed: "Imap",
+          field: "Imap",
+        };
+        break;
+      case "SendEmail":
+        submitData = {
+          subject: data.input_one,
+          body: data.input_two,
+          field: "SendEmail",
         };
         break;
       default:

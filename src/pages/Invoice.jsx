@@ -23,9 +23,7 @@ const InvoicePage = () => {
     <>
       <Layout>
         <div className="min-h-screen w-screen p-10">
-          <h1 className="text-2xl font-bold hover:underline">
-            Invoice Details
-          </h1>
+          <h1 className="text-2xl font-bold hover:underline">Invoices</h1>
 
           {error && (
             <div className="text-red-500">
@@ -40,6 +38,7 @@ const InvoicePage = () => {
               thead_four="Total"
               thead_five="Invoice Date"
               data={data.map((invoice) => ({
+                tbody_id: invoice._id,
                 tbody_one: invoice.invoiceNumber,
                 tbody_two: invoice.customerName,
                 tbody_three: invoice.customerAddress,

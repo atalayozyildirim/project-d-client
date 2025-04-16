@@ -1,5 +1,5 @@
 import React from "react";
-
+import { Link, useLocation } from "react-router-dom";
 export const CardTable = ({
   data,
   thead_one,
@@ -10,6 +10,8 @@ export const CardTable = ({
   thead_six,
   thead_eight,
 }) => {
+  const { pathname } = useLocation();
+
   return (
     <>
       <div className="w-full ml-1- mt-5 bg-transparent min-h-screen justify-center items-center">
@@ -39,7 +41,16 @@ export const CardTable = ({
                     className="hover:bg-[#141517]"
                     data-id={item.tbody_id}
                   >
-                    <td className="py-2 px-4">{item.tbody_one}</td>
+                    {pathname == "/invoice" ? (
+                      <Link
+                        to={`/invoice/${item.tbody_id}`}
+                        className="cursor-pointer"
+                      >
+                        <td className="py-2 px-4">{item.tbody_one}</td>
+                      </Link>
+                    ) : (
+                      <td className="py-2 px-4">{item.tbody_one}</td>
+                    )}
                     <td className="py-2 px-4">{item.tbody_two}</td>
                     <td className="py-2 px-4">{item.tbody_three}</td>
                     <td className="py-2 px-4">{item.tbody_four}</td>
