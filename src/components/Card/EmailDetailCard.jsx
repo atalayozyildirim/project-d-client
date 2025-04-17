@@ -10,7 +10,7 @@ export default function EmailDetailCard({ data }) {
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
-            stroke="currentColor"
+            stroke="black"
             className="size-6 cursor-pointer"
           >
             <path
@@ -24,7 +24,7 @@ export default function EmailDetailCard({ data }) {
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
-            stroke="currentColor"
+            stroke="black"
             className="size-5 cursor-pointer"
           >
             <path
