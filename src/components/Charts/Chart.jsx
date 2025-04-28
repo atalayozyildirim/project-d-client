@@ -8,8 +8,10 @@ import {
   Legend,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useChartContext } from "../../Context/ChartContext";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import api from "../../util/api";
 
 ChartJS.register(
   CategoryScale,
@@ -62,6 +64,52 @@ const Charts = () => {
     ],
   };
 
+  const queryClient = useQueryClient();
+
+  const fetchChartsData = async () => {
+    try {
+      const endpoint =
+        value === "Sales"
+          ? "/charts/total/sales"
+          : value === "Orders"
+          ? "/charts/totalInvoicesByMonth"
+          : value === "Customer"
+          ? "/charts/newCustomersByMonth"
+          : value === "Revenue"
+          ? "/charts/monthSalesRevenue"
+          : "/charts/default";
+
+      const response = await (await api()).get(endpoint);
+
+      if (response.status !== 200) {
+        throw new Error("Failed to fetch chart data");
+      }
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching chart data:", error);
+    }
+  };
+
+  const mutation = useMutation({
+    mutationFn: fetchChartsData,
+    mutationKey: ["charts"],
+    onSuccess: (data) => {
+      setChartData(data);
+      queryClient.setQueryData(["charts"], data);
+    },
+  });
+
+  const handleFetchData = () => {
+    mutation.mutate();
+  };
+
+  useEffect(() => {
+    handleFetchData();
+
+    return () => {
+      setChartData([]);
+    };
+  }, [value]);
   return (
     <div className="min-h-screen w-full p-10 bg-transparent text-white">
       <div className="w-full max-w-4xl mx-auto bg-transparent p-6 rounded-lg shadow-lg">

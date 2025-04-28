@@ -25,7 +25,6 @@ const SelectBox = () => {
           <option>Choose a chart</option>
           <option value="Sales">Sales</option>
           <option value="Revenue">Revenue Drop</option>
-          <option value="Orders"> Orders</option>
           <option value="Customer">{"customer/monthly"}</option>
         </select>
       </form>

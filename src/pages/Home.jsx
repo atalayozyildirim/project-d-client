@@ -3,7 +3,16 @@ import Layout from "../components/Layout/Layout";
 import DetailCard from "../components/Card/CardDetailChart";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "../components/Layout/Loading";
+import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement } from "chart.js";
+import { Doughnut } from "react-chartjs-2";
 import api from "../util/api";
+
+ChartJS.register(
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement // Doughnut ve Pie grafikleri için gerekli
+);
 export default function Home() {
   const fetchDashboardData = async () => {
     const res = await (await api()).get("/charts/total");
@@ -12,11 +21,69 @@ export default function Home() {
     }
     throw new Error("Error fetching dashboard data");
   };
+
+  const fetchTopProducts = async () => {
+    const res = await (await api()).get("/charts/topSellingProducts");
+    if (res.status === 200) {
+      return res.data;
+    }
+    throw new Error("Error fetching top products data");
+  };
+
   const { data, isLoading, error } = useQuery({
     queryKey: ["dashboard"],
     queryFn: fetchDashboardData,
     refetchOnWindowFocus: false,
   });
+
+  const { data: topList } = useQuery({
+    queryKey: ["topProducts"],
+    queryFn: fetchTopProducts,
+    refetchOnWindowFocus: false,
+  });
+
+  const { data: GainExpense } = useQuery({
+    queryKey: ["gainExpense"],
+    queryFn: async () => {
+      const res = await (await api()).get("/charts/monthGain");
+      if (res.status === 200) {
+        return res.data;
+      }
+      throw new Error("Error fetching gain and expense data");
+    },
+    refetchOnWindowFocus: false,
+  });
+
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "top",
+        labels: {
+          color: "white",
+        },
+      },
+      title: {
+        display: true,
+        text: "Gain vs Expense",
+        color: "white",
+      },
+    },
+    layout: {
+      padding: 20,
+    },
+  };
+  const chartData = {
+    labels: ["Gain", "Expense"],
+    datasets: [
+      {
+        data: GainExpense ? [GainExpense.gain, GainExpense.expense] : [0, 0],
+        backgroundColor: ["rgba(75, 192, 192, 0.6)", "rgba(255, 99, 132, 0.6)"],
+        borderColor: ["rgba(75, 192, 192, 1)", "rgba(255, 99, 132, 1)"],
+        borderWidth: 1,
+      },
+    ],
+  };
   if (isLoading) return <Loading />;
 
   return (
@@ -93,8 +160,45 @@ export default function Home() {
                   }
                   value={data.totalEmployers}
                 />
+                {
+                  <DetailCard
+                    title="Top Selling Products"
+                    icon={
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="size-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M12 3v18m9-9H3m18 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                        />
+                      </svg>
+                    }
+                    value={
+                      topList &&
+                      topList.map((item) => {
+                        return (
+                          <div key={item._id} className="flex flex-row gap-2">
+                            <p>{item._id}</p>
+                            <p>{item.total}</p>
+                          </div>
+                        );
+                      })
+                    }
+                  />
+                }
               </>
             )}
+          </div>
+          <div className="flex flex-col gap-4 mt-4">
+            <div className="w-full h-96 bg-black shadow-md rounded-xl p-4">
+              <Doughnut data={chartData} options={options} />
+            </div>
           </div>
         </div>
       </Layout>
