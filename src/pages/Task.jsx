@@ -6,6 +6,7 @@ import Badge from "../components/Badge/Badge";
 import api from "../util/api";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "../components/Layout/Loading";
+import { Link } from "react-router-dom";
 
 const TaskPage = () => {
   const { showAddI, showAdd } = useADDNavbar();
@@ -61,12 +62,16 @@ const TaskPage = () => {
                 {data &&
                   data.map((item, index) => (
                     <tr key={index} className="border-t border-[#27272a]">
-                      <td className="px-4 py-2 hover:underline">{item.task}</td>
+                      <td className="px-4 py-2 hover:underline">
+                        <Link to={`/tasks/${item._id}`}>{item.taskId}</Link>
+                      </td>
                       <td className="px-4 py-2 w-1/2 hover:underline">
                         {item.title}
                       </td>
                       <td className="px-4 py-2 hover:underline">
-                        {item.description}
+                        {item.description.length > 50
+                          ? item.description.slice(0, 50) + "..."
+                          : item.description}
                       </td>
                       <td className="px-4 py-2  hover:underline">
                         {item.assignedTo}
@@ -75,13 +80,14 @@ const TaskPage = () => {
                         {item.priority}
                       </td>
                       <td className="px-4 py-2 hover:underline">
-                        {item.dueDate}
+                        {new Intl.DateTimeFormat("tr-TR", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        }).format(new Date(item.dueDate))}
                       </td>
                       <td className="px-4 py-2">
-                        <Badge
-                          text={item.status ? "Procsess" : "Done"}
-                          badgeIcon={true}
-                        />
+                        <Badge text={item.status} badgeIcon={true} />
                       </td>
                       <td className="px-4 py-2">
                         <>

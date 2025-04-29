@@ -23,6 +23,7 @@ import { ChartContextProvider } from "./Context/ChartContext.jsx";
 import { ImapContext } from "./Context/ImapContext.jsx";
 import InvoiceDetail from "./pages/InvoiceDetail.jsx";
 import { MailContext } from "./Context/MailSend.jsx";
+import TaskDetail from "./pages/TaskDetail.jsx";
 
 const queryClient = new QueryClient();
 
@@ -92,6 +93,14 @@ createRoot(document.getElementById("root")).render(
                     element={
                       <AuthMiddleware>
                         <TaskPage />
+                      </AuthMiddleware>
+                    }
+                  />
+                  <Route
+                    path="/tasks/:id"
+                    element={
+                      <AuthMiddleware>
+                        <TaskDetail />
                       </AuthMiddleware>
                     }
                   />

@@ -20,6 +20,7 @@ const AuthMiddleware = ({ children }) => {
         );
         if (res.status === 200) {
           setIsAuthenticated(true);
+          localStorage.setItem("id", res.data.decoded.user.id);
         }
       } catch (err) {
         console.error(err);
