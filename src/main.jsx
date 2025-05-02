@@ -24,124 +24,127 @@ import { ImapContext } from "./Context/ImapContext.jsx";
 import InvoiceDetail from "./pages/InvoiceDetail.jsx";
 import { MailContext } from "./Context/MailSend.jsx";
 import TaskDetail from "./pages/TaskDetail.jsx";
+import { SearchNavbarContext } from "./Context/Search.jsx";
 
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <QueryClientProvider client={queryClient}>
-      <FormContext>
-        <AddNavbarContext>
-          <ChartContextProvider>
-            <ImapContext>
-              <MailContext>
-                <Routes>
-                  <Route index path="/" element={<App />} />
-                  <Route exact path="/login" element={<Login />} />
-                  <Route path="*" element={<h1>404 Not Found</h1>} />
-                  <Route
-                    exact
-                    path="/home"
-                    element={
-                      <AuthMiddleware>
-                        <Home />
-                      </AuthMiddleware>
-                    }
-                  />
-                  <Route
-                    path="/customers"
-                    element={
-                      <AuthMiddleware>
-                        <Customer />
-                      </AuthMiddleware>
-                    }
-                  />
-                  <Route
-                    path="/employers"
-                    element={
-                      <AuthMiddleware>
-                        <Employers />
-                      </AuthMiddleware>
-                    }
-                  />
-                  <Route
-                    path="/chart"
-                    element={
-                      <AuthMiddleware>
-                        <Chart />
-                      </AuthMiddleware>
-                    }
-                  />
-                  <Route
-                    path="/invoice"
-                    element={
-                      <AuthMiddleware>
-                        <InvoicePage />
-                      </AuthMiddleware>
-                    }
-                  />
-                  <Route
-                    path="/invoice/:id"
-                    element={
-                      <AuthMiddleware>
-                        <InvoiceDetail />
-                      </AuthMiddleware>
-                    }
-                  />
-                  <Route
-                    path="/tasks"
-                    element={
-                      <AuthMiddleware>
-                        <TaskPage />
-                      </AuthMiddleware>
-                    }
-                  />
-                  <Route
-                    path="/tasks/:id"
-                    element={
-                      <AuthMiddleware>
-                        <TaskDetail />
-                      </AuthMiddleware>
-                    }
-                  />
-                  <Route
-                    path="/mail"
-                    element={
-                      <AuthMiddleware>
-                        <Inbox />
-                      </AuthMiddleware>
-                    }
-                  />
-                  <Route
-                    path="/notfication"
-                    element={
-                      <AuthMiddleware>
-                        <Notfication />
-                      </AuthMiddleware>
-                    }
-                  />
-                  <Route
-                    path="/profile"
-                    element={
-                      <AuthMiddleware>
-                        <Profile />
-                      </AuthMiddleware>
-                    }
-                  />
-                  <Route
-                    path="/ai"
-                    element={
-                      <AuthMiddleware>
-                        <AIDetail />
-                      </AuthMiddleware>
-                    }
-                  />
-                </Routes>
-              </MailContext>
-            </ImapContext>
-          </ChartContextProvider>
-        </AddNavbarContext>
-      </FormContext>
+      <SearchNavbarContext>
+        <FormContext>
+          <AddNavbarContext>
+            <ChartContextProvider>
+              <ImapContext>
+                <MailContext>
+                  <Routes>
+                    <Route index path="/" element={<App />} />
+                    <Route exact path="/login" element={<Login />} />
+                    <Route path="*" element={<h1>404 Not Found</h1>} />
+                    <Route
+                      exact
+                      path="/home"
+                      element={
+                        <AuthMiddleware>
+                          <Home />
+                        </AuthMiddleware>
+                      }
+                    />
+                    <Route
+                      path="/customers"
+                      element={
+                        <AuthMiddleware>
+                          <Customer />
+                        </AuthMiddleware>
+                      }
+                    />
+                    <Route
+                      path="/employers"
+                      element={
+                        <AuthMiddleware>
+                          <Employers />
+                        </AuthMiddleware>
+                      }
+                    />
+                    <Route
+                      path="/chart"
+                      element={
+                        <AuthMiddleware>
+                          <Chart />
+                        </AuthMiddleware>
+                      }
+                    />
+                    <Route
+                      path="/invoice"
+                      element={
+                        <AuthMiddleware>
+                          <InvoicePage />
+                        </AuthMiddleware>
+                      }
+                    />
+                    <Route
+                      path="/invoice/:id"
+                      element={
+                        <AuthMiddleware>
+                          <InvoiceDetail />
+                        </AuthMiddleware>
+                      }
+                    />
+                    <Route
+                      path="/tasks"
+                      element={
+                        <AuthMiddleware>
+                          <TaskPage />
+                        </AuthMiddleware>
+                      }
+                    />
+                    <Route
+                      path="/tasks/:id"
+                      element={
+                        <AuthMiddleware>
+                          <TaskDetail />
+                        </AuthMiddleware>
+                      }
+                    />
+                    <Route
+                      path="/mail"
+                      element={
+                        <AuthMiddleware>
+                          <Inbox />
+                        </AuthMiddleware>
+                      }
+                    />
+                    <Route
+                      path="/notfication"
+                      element={
+                        <AuthMiddleware>
+                          <Notfication />
+                        </AuthMiddleware>
+                      }
+                    />
+                    <Route
+                      path="/profile"
+                      element={
+                        <AuthMiddleware>
+                          <Profile />
+                        </AuthMiddleware>
+                      }
+                    />
+                    <Route
+                      path="/ai"
+                      element={
+                        <AuthMiddleware>
+                          <AIDetail />
+                        </AuthMiddleware>
+                      }
+                    />
+                  </Routes>
+                </MailContext>
+              </ImapContext>
+            </ChartContextProvider>
+          </AddNavbarContext>
+        </FormContext>
+      </SearchNavbarContext>
     </QueryClientProvider>
   </BrowserRouter>
 );

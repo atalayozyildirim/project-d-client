@@ -9,10 +9,12 @@ import { useADDNavbar } from "../../Context/AddNavbarContext.jsx";
 import { Link, useLocation } from "react-router-dom";
 import { useImap } from "../../Context/ImapContext.jsx";
 import { useMail } from "../../Context/MailSend.jsx";
+import { useSearchNavbar } from "../../Context/Search.jsx";
 
 const NavbarTopButton = () => {
   const { showAddI } = useADDNavbar();
   const { showAddIm } = useImap();
+  const { showAddSearchI } = useSearchNavbar();
   const { toggleAddMail } = useMail();
   const location = useLocation().pathname;
   const [showAdd, setShowAdd] = React.useState(false);
@@ -47,7 +49,7 @@ const NavbarTopButton = () => {
                 close={location === "/invoice" ? showInvoiceInput : showAddI}
               />
               <Download />
-              <Search onClick={showAddInput} />
+              <Search click={showAddSearchI} />
             </>
           ) : (
             <> </>

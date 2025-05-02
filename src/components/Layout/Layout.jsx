@@ -4,8 +4,11 @@ import NavbarTopButton from "../Navbar/TopNavbar.jsx";
 import { connectWebSocket } from "../../util/websocket/Socket.js";
 import "../../App.css";
 import { ToastContainer } from "react-toastify";
+import Search from "../Form/Search.jsx";
+import { useSearchNavbar } from "../../Context/Search.jsx";
 
 const Layout = ({ children }) => {
+  const { showAddSearch, showAddSearchI } = useSearchNavbar();
   const token = localStorage.getItem("token");
   React.useEffect(() => {
     const socket = connectWebSocket(token);
@@ -17,6 +20,7 @@ const Layout = ({ children }) => {
   return (
     <>
       <NavbarTopButton />
+      {showAddSearch && <Search close={showAddSearchI} />}
       <div className="flex flex-row gap-0">
         <ToastContainer />
         <Navbar />

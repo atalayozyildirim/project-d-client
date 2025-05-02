@@ -17,9 +17,9 @@ const Inbox = () => {
   const { showAddMail, toggleAddMail } = useMail();
 
   const fetchToEmail = async () => {
-    const response = (await api()).get("/mail/inbox");
+    const response = await (await api()).get("/mail/inbox");
 
-    const data = await response.data;
+    const data = response.data;
 
     return data;
   };

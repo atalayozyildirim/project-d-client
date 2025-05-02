@@ -1,6 +1,6 @@
 import React from "react";
 
-const Search = () => {
+const Search = ({ click }) => {
   return (
     <div>
       <svg
@@ -9,6 +9,7 @@ const Search = () => {
         viewBox="0 0 24 24"
         strokeWidth={2}
         stroke="white"
+        onClick={click}
         className="size-10 p-2 cursor-pointer rounded-full hover:bg-[#313538] transition-colors duration-200"
       >
         <path

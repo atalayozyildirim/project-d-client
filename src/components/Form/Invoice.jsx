@@ -3,6 +3,7 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../../util/api";
+import { toast } from "react-toastify";
 
 export default function Invoice({ closeInvoice }) {
   const [name, setName] = useState("");
@@ -101,11 +102,13 @@ export default function Invoice({ closeInvoice }) {
     mutationFn: postInvoice,
     mutationKey: ["invoice"],
     onError: (error) => {
+      toast.error("Error creating invoice");
       console.error("Error posting invoice:", error);
     },
     onSuccess: (data) => {
       console.log("Invoice posted successfully:", data);
       queryClient.invalidateQueries(["invoice"]);
+      toast.success("Invoice created successfully!");
       closeInvoice();
     },
     onSettled: () => {

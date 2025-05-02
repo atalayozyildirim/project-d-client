@@ -4,6 +4,7 @@ import { CardTable } from "../components/Card/CardTable.jsx";
 import { useQuery } from "@tanstack/react-query";
 import api from "../util/api.js";
 import { format } from "date-fns";
+
 const InvoicePage = () => {
   const fetchInvoice = async () => {
     const res = await (await api()).get("/invoice/all");
@@ -17,6 +18,7 @@ const InvoicePage = () => {
     queryKey: ["invoice"],
     queryFn: fetchInvoice,
     refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 
   return (
