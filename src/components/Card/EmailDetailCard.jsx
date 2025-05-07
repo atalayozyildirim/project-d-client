@@ -57,22 +57,21 @@ export default function EmailDetailCard({ data }) {
             <div className="w-full h-24 border-b border-[#27272a] p-2">
               <div className="flex gap-5">
                 <div className="flex items-center gap-2">
-                  <Image
-                    src="https://via.placeholder.com/40"
+                  <div
                     alt="Avatar"
-                    className="w-9 h-9 rounded-full shadow-md cursor-pointer"
+                    className="w-9 h-9 rounded-full shadow-md cursor-pointer bg-amber-200"
                   />
                 </div>
                 <div className="flex flex-col gap-1">
                   <div className="text-sm font-bold">{email.sender}</div>
-                  <div className="text-sm">{email.subject}</div>
-                  <div className="text-sm">Reply-To : {email.reply}</div>
+                  <div className="text-sm">{email?.subject}</div>
+                  <div className="text-sm">Reply-To : {email.sender}</div>
                 </div>
               </div>
             </div>
 
             <div className="w-full h-96 2xl:h-full md:h-screen bg-transparent mt-10 break-words overflow-y-auto">
-              {email.mail}
+              {email?.text}
             </div>
 
             <div className="w-full h-auto relative -bottom-15 mt-8 border-t border-[#27272a] flex items-center">

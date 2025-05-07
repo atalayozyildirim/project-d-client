@@ -10,11 +10,13 @@ import { useQuery } from "@tanstack/react-query";
 import Loading from "../components/Layout/Loading.jsx";
 import { useMail } from "../Context/MailSend.jsx";
 import MailInput from "../components/Form/SendMail.jsx";
+import { useEmailDetailContext } from "../Context/EmailDetailContext.jsx";
 
 const Inbox = () => {
   const { showAdd, showAddI } = useADDNavbar();
   const { showAddIm, showAddImap } = useImap();
   const { showAddMail, toggleAddMail } = useMail();
+  const { showEmailDetail } = useEmailDetailContext();
 
   const fetchToEmail = async () => {
     const response = await (await api()).get("/mail/inbox");
@@ -76,7 +78,7 @@ const Inbox = () => {
               </div>
             </div>
             <div className="w-full min-h-screen border border-[#27272a] rounded-tl-none  -mt-2 rounded-bl-none rounded-xl p-5">
-              <EmailDetailCard data={[]} />
+              <EmailDetailCard data={[showEmailDetail]} />
             </div>
           </div>
         </div>

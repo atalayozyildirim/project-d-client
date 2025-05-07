@@ -74,7 +74,7 @@ const TaskPage = () => {
                           : item.description}
                       </td>
                       <td className="px-4 py-2  hover:underline">
-                        {item.assignedTo}
+                        {item?.assignedTo && "Unassigned"}
                       </td>
                       <td className="px-4 py-2 hover:underline">
                         {item.priority}

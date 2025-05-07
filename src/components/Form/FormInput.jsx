@@ -65,7 +65,7 @@ export default function FormInput({
           description: data.input_two,
           assignedTo: data.input_three,
           priority: data.input_four,
-          status: "Progress",
+          status: "pending",
           dueDate: data.input_five,
           field: "Tasks",
         };

@@ -1,7 +1,9 @@
 import React from "react";
 import { formatDistanceToNow } from "date-fns";
+import { useEmailDetailContext } from "../../Context/EmailDetailContext";
 
 export default function EmailCard({ data }) {
+  const { handleSetShowDetailEmail } = useEmailDetailContext();
   return (
     <>
       {data &&
@@ -12,17 +14,29 @@ export default function EmailCard({ data }) {
           >
             <div className="p-2 ml-4 flex flex-col gap-2">
               <div className="flex justify-between items-center gap-10">
-                <div data-sender="" className="text-md font-bold">
-                  {email.sender || "Atalay Özyıldırım"}
+                <div
+                  data-sender=""
+                  onClick={() => {
+                    handleSetShowDetailEmail(data[index]);
+                  }}
+                  className="text-md font-bold cursor-pointer hover:underline"
+                >
+                  {email?.from || "Atalay Özyıldırım"}
                 </div>
                 <div data-date className="flex text-sm mr-5">
-                  {formatDistanceToNow(new Date(email.date), {
+                  {formatDistanceToNow(new Date(email?.date || new Date()), {
                     addSuffix: true,
                   })}
                 </div>
               </div>
-              <div className="text-sm -mt-2">{email.subject || "Subject"}</div>
-              <div className="text-sm text-gray-500">{email.subject}</div>
+              <div className="text-sm -mt-2 cursor-pointer">
+                {email.subject || "Subject"}
+              </div>
+              <div className="text-sm text-gray-500">
+                {email.text.length > 200
+                  ? email?.text.substring(0, 200) + "..."
+                  : email?.text}
+              </div>
             </div>
           </div>
         ))}
