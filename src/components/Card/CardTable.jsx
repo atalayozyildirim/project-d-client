@@ -42,12 +42,14 @@ export const CardTable = ({
                     data-id={item.tbody_id}
                   >
                     {pathname == "/invoice" ? (
-                      <Link
-                        to={`/invoice/${item.tbody_id}`}
-                        className="cursor-pointer"
-                      >
-                        <td className="py-2 px-4">{item.tbody_one}</td>
-                      </Link>
+                      <td className="py-2 px-4">
+                        <Link
+                          to={`/invoice/${item.tbody_id}`}
+                          className="cursor-pointer"
+                        >
+                          {item.tbody_one}
+                        </Link>
+                      </td>
                     ) : (
                       <td className="py-2 px-4">{item.tbody_one}</td>
                     )}
