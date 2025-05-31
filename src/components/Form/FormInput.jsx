@@ -157,6 +157,16 @@ export default function FormInput({
           </svg>
         </div>
         <div className="w-full max-w-xs mx-auto">
+          {fields === "Imap" ? (
+            <p className="text-lg font-semibold text-white mb-4">
+              Imaps setting
+            </p>
+          ) : (
+            <p className="text-lg font-semibold text-white mb-4">
+              {" "}
+              SMPT Settings{" "}
+            </p>
+          )}
           <label
             htmlFor="input1"
             className="block text-sm font-medium text-gray-700"

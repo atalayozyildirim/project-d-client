@@ -1,6 +1,7 @@
 import React, { useState, createContext, useContext } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../util/api";
+import { toast } from "react-toastify";
 
 const Context = createContext();
 
@@ -32,29 +33,40 @@ const FormContext = ({ children }) => {
   });
 
   const onSubmitData = async (data, field) => {
-    let url = import.meta.env.VITE_BACKEND_URI;
-    switch (field) {
-      case "Employers":
-        url += "/emp/add";
-        break;
-      case "Customers":
-        url += "/customer/add";
-        break;
-      case "Tasks":
-        url += "/task/add";
-        break;
-      case "Emails":
-        url += "/mail/add";
-        break;
-      case "Imap":
-        url += "/mail/imap/add";
-        break;
-      default:
-        console.error("Invalid field");
-        return;
+    try {
+      if (!data || !field) {
+        throw new Error("Data or field is missing");
+      }
+      let url = import.meta.env.VITE_BACKEND_URI;
+      switch (field) {
+        case "Employers":
+          url += "/emp/add";
+          break;
+        case "Customers":
+          url += "/customer/add";
+          break;
+        case "Tasks":
+          url += "/task/add";
+          break;
+        case "Emails":
+          url += "/mail/add";
+          break;
+        case "Imap":
+          url += "/mail/imap/add";
+          break;
+        default:
+          console.error("Invalid field");
+          return;
+      }
+
+      await mutation.mutateAsync({ url, data });
+      toast.success("Data submitted successfully");
+    } catch (error) {
+      const backendMessage =
+        error?.response?.data?.message || error.message || "Unknown error";
+      toast.error("Error submitting data: " + backendMessage);
+      console.error("Error in onSubmitData:", error);
     }
-    console.log(data);
-    mutation.mutate({ url, data });
   };
 
   return (
