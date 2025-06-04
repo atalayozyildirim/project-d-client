@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from "react";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import api from "../../util/api";
 import { toast } from "react-toastify";
 
 export default function Invoice({ closeInvoice }) {
   const [name, setName] = useState("");
+  const [name2, setName2] = useState("");
   const [currentDate, setCurrentDate] = useState("");
   const [customerAddress, setCustomerAddress] = useState("Customer Address");
   const [items, setItems] = useState([
-    { description: "", quantity: 0, unitPrice: 0, total: 0 },
+    { name: "", quantity: 0, unitPrice: 0, total: 0 },
   ]);
   const [kdv, setKdv] = useState(20);
   const [subTotal, setSubTotal] = useState(0);
@@ -32,6 +33,16 @@ export default function Invoice({ closeInvoice }) {
     calculateTotals();
   }, [items, kdv]);
 
+  const fetchSelectBoxItems = async () => {
+    try {
+      const res = await (await api()).get("/product/list");
+      return res.data.products;
+    } catch (error) {
+      console.error("Error fetching select box items:", error);
+      throw error;
+    }
+  };
+
   const handleItemChange = (index, field, value) => {
     const updatedItems = [...items];
     updatedItems[index] = { ...updatedItems[index], [field]: value };
@@ -42,10 +53,7 @@ export default function Invoice({ closeInvoice }) {
   };
 
   const addItem = () => {
-    setItems([
-      ...items,
-      { description: "", quantity: 0, unitPrice: 0, total: 0 },
-    ]);
+    setItems([...items, { name: "", quantity: 0, unitPrice: 0, total: 0 }]);
   };
 
   const calculateTotals = () => {
@@ -69,9 +77,13 @@ export default function Invoice({ closeInvoice }) {
 
   const postInvoice = async () => {
     try {
+      if (!name || !customerAddress || items.length === 0) {
+        toast.error("Please fill in all required fields.");
+        return;
+      }
       const formattedItems = items.map((item) => ({
         productID: Math.floor(Math.random() * 1000),
-        description: item.description,
+        name: name2,
         quantity: item.quantity,
         price: item.unitPrice,
       }));
@@ -85,7 +97,11 @@ export default function Invoice({ closeInvoice }) {
         total: totalAmount.toFixed(2),
         status: "pending",
       };
-      const res = (await api()).post("/invoice/add", payload);
+      const res = (await api()).post("/invoice/add", payload, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       if (res.status === 201) {
         closeInvoice();
@@ -108,12 +124,17 @@ export default function Invoice({ closeInvoice }) {
     onSuccess: (data) => {
       console.log("Invoice posted successfully:", data);
       queryClient.invalidateQueries(["invoice"]);
-      toast.success("Invoice created successfully!");
       closeInvoice();
     },
     onSettled: () => {
       queryClient.invalidateQueries(["invoice"]);
     },
+  });
+
+  const { data: selectBoxData } = useQuery({
+    queryKey: ["selectBoxItems"],
+    queryFn: fetchSelectBoxItems,
+    refetchOnWindowFocus: false,
   });
   return (
     <>
@@ -190,21 +211,36 @@ export default function Invoice({ closeInvoice }) {
             {items.map((item, index) => (
               <tr key={index}>
                 <td>
-                  <input
-                    type="text"
-                    value={item.description}
-                    placeholder="Description"
+                  <select
                     className="bg-white"
-                    onChange={(e) =>
-                      handleItemChange(index, "description", e.target.value)
-                    }
-                  />
+                    onChange={(e) => {
+                      const selectedProduct = selectBoxData.find(
+                        (product) => product.name === e.target.value
+                      );
+                      console.log("Selected Product:", selectedProduct);
+
+                      setName2(selectedProduct.name);
+                      handleItemChange(
+                        index,
+                        "unitPrice",
+                        selectedProduct ? selectedProduct.price : 0
+                      );
+                    }}
+                  >
+                    <option value="">Select Product</option>
+                    {selectBoxData?.map((product) => (
+                      <option key={product._id} value={product.name}>
+                        {product.name}
+                      </option>
+                    ))}
+                  </select>
                 </td>
                 <td>
                   <input
                     type="number"
                     placeholder="quantity"
                     className="bg-white"
+                    min="0"
                     onChange={(e) =>
                       handleItemChange(
                         index,
@@ -219,13 +255,7 @@ export default function Invoice({ closeInvoice }) {
                     type="number"
                     placeholder="unit price"
                     className="bg-white"
-                    onChange={(e) =>
-                      handleItemChange(
-                        index,
-                        "unitPrice",
-                        Number(e.target.value)
-                      )
-                    }
+                    value={item.unitPrice}
                   />
                 </td>
                 <td>{item.total.toFixed(2)}</td>

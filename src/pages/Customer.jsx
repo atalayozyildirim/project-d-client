@@ -1,4 +1,3 @@
-import React from "react";
 import Layout from "../components/Layout/Layout";
 import { CardTable } from "../components/Card/CardTable";
 import { useFormContext } from "../Context/FormContext";

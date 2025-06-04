@@ -26,6 +26,7 @@ import { MailContext } from "./Context/MailSend.jsx";
 import TaskDetail from "./pages/TaskDetail.jsx";
 import { SearchNavbarContext } from "./Context/Search.jsx";
 import { EmailDetailComtext } from "./Context/EmailDetailContext.jsx";
+import { Product } from "./pages/Product.jsx";
 
 const queryClient = new QueryClient();
 
@@ -129,6 +130,14 @@ createRoot(document.getElementById("root")).render(
                         element={
                           <AuthMiddleware>
                             <Profile />
+                          </AuthMiddleware>
+                        }
+                      />
+                      <Route
+                        path="/products"
+                        element={
+                          <AuthMiddleware>
+                            <Product />
                           </AuthMiddleware>
                         }
                       />

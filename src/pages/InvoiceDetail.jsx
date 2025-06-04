@@ -133,7 +133,7 @@ const InvoiceDetail = () => {
                             <td>
                               <input
                                 type="text"
-                                value={item.description}
+                                value={item.name}
                                 placeholder="Description"
                                 className="bg-white"
                               />

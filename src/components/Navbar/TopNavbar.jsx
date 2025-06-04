@@ -40,7 +40,8 @@ const NavbarTopButton = () => {
           location == "/employers" ||
           location == "/invoice" ||
           location == "/mail" ||
-          location == "/tasks" ? (
+          location == "/tasks" ||
+          location === "/products" ? (
             <>
               <EditNavbar />
               <AddNavbarButtons

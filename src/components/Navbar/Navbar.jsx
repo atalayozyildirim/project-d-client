@@ -83,6 +83,25 @@ const Navbar = () => {
           />
 
           <NavbarButton
+            href={"/products"}
+            comp={
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3.75 6.75h16.5a2.25 2.25 0 0 1 2.25 2.25v10.5A2.25 2.25 0 0 1 20.25 21H3.75A2.25 2.25 0 0 1 1.5 18.75V9A2.25 2.25 0 0 1 3.75 6.75Zm0-3h16.5a2.25 2.25 0 0 1 2.25 2.25v1.5a2.25 2.25 0 0 1-2.25 2.25H3.75A2.25 2.25 0 0 1 1.5 7.5V6A2.25 2.25 0 0 1 3.75 3Z"
+                />
+              </svg>
+            }
+          />
+          <NavbarButton
             href="/chart"
             comp={
               <svg

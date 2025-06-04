@@ -54,6 +54,9 @@ const FormContext = ({ children }) => {
         case "Imap":
           url += "/mail/imap/add";
           break;
+        case "Products":
+          url += "/product/add";
+          break;
         default:
           console.error("Invalid field");
           return;

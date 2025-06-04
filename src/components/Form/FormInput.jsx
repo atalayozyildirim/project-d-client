@@ -91,6 +91,15 @@ export default function FormInput({
           field: "Imap",
         };
         break;
+      case "Products":
+        submitData = {
+          name: data.input_one,
+          price: data.input_two,
+          stock: data.input_three,
+          description: data.input_four,
+          field: "Products",
+        };
+        break;
       case "SendEmail":
         submitData = {
           subject: data.input_one,
@@ -157,14 +166,13 @@ export default function FormInput({
           </svg>
         </div>
         <div className="w-full max-w-xs mx-auto">
-          {fields === "Imap" ? (
+          {pathname === "/mail" && (
             <p className="text-lg font-semibold text-white mb-4">
-              Imaps setting
-            </p>
-          ) : (
-            <p className="text-lg font-semibold text-white mb-4">
-              {" "}
-              SMPT Settings{" "}
+              {fields === "Imap"
+                ? "Imap Settings"
+                : fields === "Emails"
+                ? "SMTP Settings"
+                : ""}
             </p>
           )}
           <label
